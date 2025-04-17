@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allow All Current Users</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2ecc71;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Allow All Current Users</h1>
+  <p>Solve the CAPTCHA below to proceed:</p>
+
+  <p>Decode this base64 message:</p>
+  <p><code>cGFzc3dvcmQ6cGFzc3dvcmQxMjM=</code></p> <!-- Base64 encoded message -->
+  
+  <p>Also, solve the following complex math equation:</p>
+  <p>What is <strong>13 * 17 - 5</strong>?</p> <!-- Hard math equation -->
+
+  <input type="text" id="captchaInput" placeholder="Enter decoded message">
+  <input type="text" id="mathInput" placeholder="Enter math answer">
+
+  <button onclick="verifyCaptcha()">Submit Answer</button>
+
+  <p class="error" id="errorMessage" style="display: none;">Incorrect answer. Please try again.</p>
+
+  <script>
+    const correctMessage = "password:password123";  // Decoded message for base64 string
+    const correctMath = 216; // Result of 13 * 17 - 5
+
+    function verifyCaptcha() {
+      const userMessage = document.getElementById("captchaInput").value.trim();
+      const userMath = parseInt(document.getElementById("mathInput").value.trim());
+
+      if (userMessage === correctMessage && userMath === correctMath) {
+        setTimeout(function() {
+          window.location.href = "pleasewaittoberedirected.html";  // Redirect to waiting page
+        }, 1000);
+      } else {
+        document.getElementById("errorMessage").style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
