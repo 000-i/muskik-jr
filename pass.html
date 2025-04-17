@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Muskik Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    input:focus, button:focus {
+      outline: none;
+      box-shadow: 0 0 5px #fff;
+    }
+    #error {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+    #secretButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      padding: 20px;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    body:hover #secretButton {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #resetButton {
+      padding: 10px 20px;
+      background: #e74c3c;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+    #resetButton:hover {
+      background: #c0392b;
+    }
+    #resetMessage {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 40px;
+      font-size: 24px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 80%;
+      width: 500px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <h2>Muskik Login</h2>
+  <input type="password" id="pw" placeholder="Enter your password" />
+  <button onclick="unlock()">Login</button>
+  <div id="error">Access Denied</div>
+  <div id="secretButton" onclick="unlockForReal()"> </div>
+  <button id="resetButton" onclick="resetPassword()">Reset Password</button>
+  <div id="resetMessage">You cannot change the password at the moment for security reasons.</div>
+
+  <script>
+    const encoded = "aGVsbG8xMjM=";
+    let unlocked = false;
+    let resetClickCount = 0;
+
+    function unlockForReal() {
+      unlocked = true;
+      window.location.href = "Xg7kL5jTpq8RnH3zF2Vw0aU1dCmY9bJz6eQ4PzWv8jT0u2L5G7oM3HnJk9pKbD1FvQ6tNcX
+.html";
+    }
+
+    function unlock() {
+      const password = document.getElementById("pw").value;
+      const error = document.getElementById("error");
+      error.style.display = "block";
+
+      if (unlocked) {
+        window.location.href = "dashboard.html";
+      }
+    }
+
+    function resetPassword() {
+      const resetMessage = document.getElementById("resetMessage");
+      resetMessage.style.display = "block";
+
+      resetClickCount++;
+    }
+
+    window.onload = () => {
+      document.getElementById("secretButton").style.display = "block";
+    };
+  </script>
+</body>
+</html>
