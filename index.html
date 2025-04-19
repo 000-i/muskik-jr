@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Device Page</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f7fc;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #4a90e2;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    #device-name {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    #redirect-button {
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      color: #fff;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #redirect-button:hover {
+      background-color: #45a049;
+    }
+
+    #redirect-button:disabled {
+      background-color: #ddd;
+      cursor: not-allowed;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: #777;
+    }
+
+    .loading {
+      font-size: 1.1rem;
+      color: #f39c12;
+      margin-bottom: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>User Device Page</h1>
+    <p class="loading" id="device-name">Loading device name...</p>
+    <p>The button below will work once the admin has allowed you to use muskik!</p>
+    <button id="redirect-button" disabled>Go to App</button>
+  </div>
+
+  <script>
+    const supabaseUrl = 'https://lgpbgyhculujoypzusll.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxncGJneWhjdWx1am95cHp1c2xsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5MDY3MDMsImV4cCI6MjA2MDQ4MjcwM30.CNALRVgXU4-HHZjXwoL6fkd6gHLfrnm-XT69YVLbgxs';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const redirectButton = document.getElementById("redirect-button");
+
+    // ✅ Generate a truly unique name using crypto UUID
+    function generateRandomName() {
+      return 'device-' + crypto.randomUUID();
+    }
+
+    // ✅ Generate a complex redirect URL with a random string
+    function generateRedirectUrl() {
+      const randomString = crypto.randomUUID().replace(/-/g, ''); // Remove dashes from UUID to make it compact
+      return `muskik-jr-${randomString}.html`;
+    }
+
+    // ✅ Insert new device and begin checking
+    async function insertDevice() {
+      const deviceName = generateRandomName();
+      const deviceData = { name: deviceName, allowed: false, is_redirected: false };
+
+      try {
+        const { error } = await supabaseClient.from('devices').insert([deviceData]);
+        if (error) throw error;
+
+        document.getElementById('device-name').textContent = `Device Name: ${deviceName}`;
+        checkDeviceStatus(deviceName);
+      } catch (err) {
+        console.error("Insert error:", err);
+      }
+    }
+
+    // ✅ Poll for redirection approval
+    async function checkDeviceStatus(deviceName) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('devices')
+          .select('is_redirected')
+          .eq('name', deviceName)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Polling error:", error);
+          return;
+        }
+
+        if (data?.is_redirected) {
+          console.log(`Device "${deviceName}" is allowed. Showing redirect button.`);
+          redirectButton.disabled = false;  // Enable the button when redirected
+        } else {
+          setTimeout(() => checkDeviceStatus(deviceName), 3000); // Keep polling
+        }
+      } catch (err) {
+        console.error("Polling failed:", err);
+      }
+    }
+
+    // ✅ On page load: clear localStorage and always insert new device
+    window.onload = async () => {
+      localStorage.removeItem('device_name');
+      await insertDevice();
+    };
+
+    // ✅ Manual redirection when user clicks the button (with complex URL)
+    redirectButton.addEventListener('click', () => {
+      const redirectUrl = generateRedirectUrl(); // Generate the new URL
+      window.location.href = redirectUrl;
+    });
+  </script>
+</body>
+</html>

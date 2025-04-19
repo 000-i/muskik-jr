@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 Not Found</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Orbitron', sans-serif;
+      background: #0f0c29;  /* fallback */
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 10rem;
+      color: #00f0ff;
+      text-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff; }
+      50% { text-shadow: 0 0 30px #00f0ff, 0 0 60px #00f0ff; }
+    }
+
+    .typewriter {
+      overflow: hidden;
+      border-right: .15em solid #fff;
+      white-space: nowrap;
+      letter-spacing: .1em;
+      animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+      font-size: 1.5rem;
+      max-width: 100%;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: white }
+    }
+
+    a {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      padding: 0.8rem 2rem;
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #fff;
+      border-radius: 30px;
+      text-decoration: none;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* Floating shapes */
+    .shapes div {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      animation: float 10s infinite linear;
+      opacity: 0.5;
+    }
+
+    .shapes div:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+    .shapes div:nth-child(2) { top: 30%; left: 70%; animation-delay: 2s; }
+    .shapes div:nth-child(3) { top: 60%; left: 40%; animation-delay: 4s; }
+    .shapes div:nth-child(4) { top: 80%; left: 10%; animation-delay: 6s; }
+    .shapes div:nth-child(5) { top: 50%; left: 85%; animation-delay: 8s; }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateY(-40px) rotate(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) rotate(360deg);
+        opacity: 0.5;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="shapes">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+
+  <h1>404</h1>
+  <div class="typewriter">Oops! Looks like you're lost in space.</div>
+<a href="https://mujr.netlify.app/muskikjr-6e60edbe9cfe57889b2ab25e6ee815eb023da8cb2a5fc3209a47df9eedf7b3b7" target="_blank" rel="noopener noreferrer">
+  Beam me to muskik jr 🚀
+</a>
+
+</body>
+</html>

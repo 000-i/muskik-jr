@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Load Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        .alert {
+            padding: 15px;
+            background-color: #f44336;
+            color: white;
+            margin-top: 20px;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .login-box button {
+            width: 100%;
+            background-color: #4CAF50;
+        }
+
+        /* Hide dashboard initially */
+        #dashboard {
+            display: none;
+        }
+
+        /* Ensure the Clear Button is shown and aligned properly */
+        #clear-button-container {
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        #clear-button-container button {
+            width: auto;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="login-container" class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <div id="login-error" class="alert" style="display: none;">Invalid username or password!</div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboard" class="container">
+        <h1>Admin Dashboard</h1>
+        <p>Click "Redirect" to mark the user's device for redirection.</p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Device Name</th>
+                        <th>Allowed</th>
+                        <th>Redirected</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="device-list">
+                    <!-- Device rows go here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script>
+        const supabaseUrl = 'https://lgpbgyhculujoypzusll.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxncGJneWhjdWx1am95cHp1c2xsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5MDY3MDMsImV4cCI6MjA2MDQ4MjcwM30.CNALRVgXU4-HHZjXwoL6fkd6gHLfrnm-XT69YVLbgxs'; // Your Supabase anon key
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Login Function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const correctUsername = 'muskik-jr-master';
+            const correctPassword = 'muskik,,,Musik';
+
+            if (username === correctUsername && password === correctPassword) {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                fetchDevices();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        // Fetch Devices and populate table
+        async function fetchDevices() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('devices')
+                    .select('id, name, allowed, is_redirected');
+
+                if (error) throw error;
+
+                const deviceList = document.getElementById('device-list');
+                deviceList.innerHTML = '';
+
+                data.forEach(device => {
+                    const row = document.createElement('tr');
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = device.name;
+
+                    const allowedCell = document.createElement('td');
+                    allowedCell.textContent = device.allowed ? 'Allowed' : 'Not Allowed';
+
+                    const redirectedCell = document.createElement('td');
+                    redirectedCell.textContent = device.is_redirected ? 'Redirected' : 'Not Redirected';
+
+                    const actionCell = document.createElement('td');
+                    const redirectButton = document.createElement('button');
+                    redirectButton.textContent = 'Redirect';
+                    redirectButton.disabled = device.is_redirected;
+                    redirectButton.onclick = () => redirectDevice(device.id);
+
+                    actionCell.appendChild(redirectButton);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(allowedCell);
+                    row.appendChild(redirectedCell);
+                    row.appendChild(actionCell);
+
+                    deviceList.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching devices:', error);
+            }
+        }
+
+        // Redirect Device
+        async function redirectDevice(deviceId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('devices')
+                    .update({ is_redirected: true })
+                    .eq('id', deviceId);
+
+                if (error) throw error;
+
+                alert(`Device ${deviceId} has been redirected.`);
+                fetchDevices();
+            } catch (error) {
+                console.error('Error updating redirect status:', error);
+            }
+        }
+    </script>
+</body>
+</html>
